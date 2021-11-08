@@ -6,6 +6,7 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -23,6 +24,7 @@ class Post
     /**
      * @var string
      * @ORM\Column
+     * @Assert\NotBlank
      */
     private string $title;
 
@@ -33,10 +35,26 @@ class Post
     private \DateTimeImmutable $publishedAt;
 
     /**
+     * @var string|null
+     * @ORM\Column
+     */
+    private ?string $image = null;
+
+
+    /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
      */
     private Collection $comments;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     * @Assert\Length(min=10)
+     *
+     */
+    private string $content;
 
     /**
      * Post constructor.
@@ -46,12 +64,6 @@ class Post
         $this->publishedAt = new \DateTimeImmutable();
         $this->comments = new ArrayCollection();
     }
-
-    /**
-     * @var string
-     * @ORM\Column(type="text")
-     */
-    private string $content;
 
     public function getId(): ?int
     {
@@ -112,6 +124,22 @@ class Post
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string|null $image
+     */
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
     }
 
 }

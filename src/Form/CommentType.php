@@ -28,6 +28,9 @@ class CommentType extends AbstractType
             ]);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault("data_class", Comment::class);

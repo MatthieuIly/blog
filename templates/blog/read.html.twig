@@ -4,11 +4,12 @@
 
     <h1>{{ post.title }}</h1>
     <small>{{ post.publishedAt|date('d/m/Y') }}</small>
+    <img src="{{ asset(post.image) }}" alt="{{ post.title }}">
     <p>{{ post.content }}</p>
     {{ form_start(form) }}
         {{ form_row(form.author) }}
         {{ form_row(form.content) }}
-        <button type="ssubmit">Envoyer</button>
+        <button type="submit">Envoyer</button>
     {{ form_end(form) }}
     <ul>
         {% for comment in post.comments %}
