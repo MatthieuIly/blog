@@ -36,13 +36,13 @@ class Post
 
     /**
      * @var string|null
-     * @ORM\Column
+     * @ORM\Column(nullable=true)
      */
     private ?string $image = null;
 
 
     /**
-     * @var Collection
+     * @var Collection<int, Comment>
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
      */
     private Collection $comments;

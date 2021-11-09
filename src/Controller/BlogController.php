@@ -27,11 +27,11 @@ class BlogController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $limit = $request->get('limit', 10);
-        $page = $request->get('page', 10);
+        $limit = $request->get('limit', 10) * 1;
+        $page = $request->get('page', 10) * 1;
 
 //        $total = $this->getDoctrine()->getRepository(Post::class)->count([]);
-        /** @var Paginator $posts */
+        /** @var Paginator<Post> $posts */
         $posts = $this->getDoctrine()->getRepository(Post::class)->getPaginatedPosts(
             $page,
             $limit

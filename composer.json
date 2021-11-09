@@ -1,4 +1,6 @@
 {
+    "name": "mily/blogperso",
+    "description": "Blog perso",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
@@ -7,7 +9,7 @@
         "php": ">=8.0.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "composer/package-versions-deprecated": "1.11.99.4",
+        "composer/package-versions-deprecated": "^1.11",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -53,7 +55,14 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^5.3",
         "symfony/stopwatch": "5.3.*",
-        "symfony/web-profiler-bundle": "5.3.*"
+        "symfony/web-profiler-bundle": "5.3.*",
+        "friendsofphp/php-cs-fixer": "^3.2",
+        "sebastian/phpcpd": "^6.0",
+        "phpmd/phpmd": "^2.10",
+        "nunomaduro/phpinsights": "^2.0",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-doctrine": "^1.0",
+        "phpstan/phpstan-symfony": "^1.0"
     },
     "config": {
         "optimize-autoloader": true,

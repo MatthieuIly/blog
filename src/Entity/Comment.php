@@ -45,6 +45,7 @@ class Comment
     /**
      * @var Post
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
+     * @ORM\JoinColumn(name="post_id", referencedColumnName="id", nullable=false)
      */
     private Post $post;
 
