@@ -10,7 +10,7 @@ jobs:
                 operating-system: [ubuntu-latest]
                 php-versions: ['8.0']
         services:
-            db:
+            mysql:
                 image: mysql:8.0
                 env:
                     MYSQL_ROOT_PASSWORD: 'Password123!'
