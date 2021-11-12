@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Post;
@@ -11,35 +13,32 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
-use function Sodium\add;
 
 /**
  *
  */
-class PostType extends AbstractType
+Abstract class PostType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, [
-                "label" => "Titre :"
+                'label' => 'Titre :',
             ])
-            ->add("content", TextareaType::class, [
-                "label" => "Article"
+            ->add('content', TextareaType::class, [
+                'label' => 'Article',
             ])
-        ->add("file", FileType::class, [
-            "mapped" => false,
-            "constraints" => [
-                new Image(),
-                new NotNull()
-            ]
-        ]);
-
+            ->add('file', FileType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new Image(),
+                    new NotNull(),
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault("data_class", Post::class);
+        $resolver->setDefault('data_class', Post::class);
     }
 }

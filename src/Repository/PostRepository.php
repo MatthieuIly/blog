@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Post;
@@ -10,8 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
  * @method Post|null findOneBy(array $criteria, array $orderBy = null)
- * @method Post[]    findAll()
- * @method Post[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method findAll()
+ * @method findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PostRepository extends ServiceEntityRepository
 {
@@ -20,21 +22,15 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    /**
-     * @param int $page
-     * @param int $limit
-     * @return Paginator
-     */
     public function getPaginatedPosts(int $page, int $limit): Paginator
     {
         return new Paginator(
-            $this->createQueryBuilder("p")
-                ->addSelect("c")
-                ->join("p.comments", "c")
+            $this->createQueryBuilder('p')
+                ->addSelect('c')
+                ->join('p.comments', 'c')
                 ->setMaxResults($limit)
                 ->setFirstResult(($page * $limit) - $limit)
         );
-
     }
 
     // /**

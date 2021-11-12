@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -37,13 +38,11 @@ class Comment
     private string $content;
 
     /**
-     * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $postedAt;
 
     /**
-     * @var Post
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
      * @ORM\JoinColumn(name="post_id", referencedColumnName="id", nullable=false)
      */

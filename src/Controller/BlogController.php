@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -11,7 +12,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -44,12 +44,12 @@ class BlogController extends AbstractController
             min($page + 3, $pages)
         );
 
-        return $this->render("blog/index.html.twig", [
-            "posts" => $posts,
-            "pages" => $pages,
-            "page" => $page,
-            "limit" => $limit,
-            "range" => $range
+        return $this->render('blog/index.html.twig', [
+            'posts' => $posts,
+            'pages' => $pages,
+            'page' => $page,
+            'limit' => $limit,
+            'range' => $range
         ]);
     }
 
@@ -69,12 +69,12 @@ class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->persist($comment);
             $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute("blog_read", ["id" => $post->getId()]);
+            return $this->redirectToRoute('blog_read', ['id' => $post->getId()]);
         }
 
-        return $this->render("blog/read.html.twig", [
+        return $this->render('blog/read.html.twig', [
             'post' => $post,
-            "form" => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
@@ -86,7 +86,12 @@ class BlogController extends AbstractController
      * @param string $uploadsAbsoluteDir
      * @return Response
      */
-    public function create(Request $request, SluggerInterface $slugger, string $uploadsRelativeDir, string $uploadsAbsoluteDir): Response
+    public function create(
+        Request $request,
+        SluggerInterface $slugger,
+        string $uploadsRelativeDir,
+        string $uploadsAbsoluteDir
+    ): Response
     {
         $post = new Post();
 
@@ -94,10 +99,10 @@ class BlogController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $file */
-            $file = $form->get("file")->getData();
+            $file = $form->get('file')->getData();
 
             $filename = sprintf(
-                "%s_%s.%s",
+                '%s_%s.%s',
                 $slugger->slug($file->getClientOriginalName()),
                 uniqid(),
                 $file->getClientOriginalExtension()
@@ -105,15 +110,15 @@ class BlogController extends AbstractController
 
             $file->move($uploadsAbsoluteDir, $filename);
 
-            $post->setImage($uploadsRelativeDir . "/" . $filename);
+            $post->setImage($uploadsRelativeDir . '/' . $filename);
 
             $this->getDoctrine()->getManager()->persist($post);
             $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute("blog_read", ["id" => $post->getId()]);
+            return $this->redirectToRoute('blog_read', ['id' => $post->getId()]);
         }
 
-        return $this->render("blog/create.html.twig", [
-            "form" => $form->createView()
+        return $this->render('blog/create.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
@@ -129,11 +134,11 @@ class BlogController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute("blog_read", ["id" => $post->getId()]);
+            return $this->redirectToRoute('blog_read', ['id' => $post->getId()]);
         }
 
-        return $this->render("blog/update.html.twig", [
-            "form" => $form->createView()
+        return $this->render('blog/update.html.twig', [
+            'form' => $form->createView()
         ]);
     }
- }
+}

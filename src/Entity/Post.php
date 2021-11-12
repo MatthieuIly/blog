@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\PostRepository;
@@ -22,20 +24,17 @@ class Post
     private $id;
 
     /**
-     * @var string
      * @ORM\Column
      * @Assert\NotBlank
      */
     private string $title;
 
     /**
-     * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $publishedAt;
 
     /**
-     * @var string|null
      * @ORM\Column(nullable=true)
      */
     private ?string $image = null;
@@ -48,7 +47,6 @@ class Post
     private Collection $comments;
 
     /**
-     * @var string
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      * @Assert\Length(min=10)
@@ -70,9 +68,6 @@ class Post
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -86,9 +81,6 @@ class Post
         $this->title = $title;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getPublishedAt(): \DateTimeImmutable
     {
         return $this->publishedAt;
@@ -118,17 +110,11 @@ class Post
         $this->content = $content;
     }
 
-    /**
-     * @return Collection
-     */
     public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    /**
-     * @return string|null
-     */
     public function getImage(): ?string
     {
         return $this->image;
