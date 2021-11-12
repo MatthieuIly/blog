@@ -10,10 +10,10 @@ jobs:
                 operating-system: [ubuntu-latest]
                 php-versions: ['8.0']
         services:
-            mysql:
+            db:
                 image: mysql:8.0
                 env:
-                    MYSQL_ROOT_PASSWORD: 'sqlsql'
+                    MYSQL_ROOT_PASSWORD: 'Password123!'
                 ports:
                     - 3306:3306
         steps:
@@ -35,7 +35,7 @@ jobs:
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
                   restore-keys: ${{ runner.os }}-composer-
             - name: Install
-              run: make install db_user=root db_password=sqlsql env=test
+              run: make install db_user=root db_password=Password123! env=test
             - name: Analyze
               run: make analyse
             - name: Tests

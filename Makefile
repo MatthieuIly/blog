@@ -1,7 +1,7 @@
 install:
 	cp .env.dist .env.$(env).local
 	sed -i -e 's/DATABASE_USER/$(db_user)/' .env.$(env).local
-    sed -i -e 's/DATABASE_PASSWORD/$(db_password)/' .env.$(env).local
+	sed -i -e 's/DATABASE_PASSWORD/$(db_password)/' .env.$(env).local
 	composer install
 	make prepare env=$(env)
 	yarn install
