@@ -8,6 +8,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\CommentType;
 use App\Form\PostType;
+use App\Uploader\UploaderInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -82,36 +83,26 @@ class BlogController extends AbstractController
     /**
      * @Route("/publier-article", name="blog_create")
      * @param Request $request
-     * @param SluggerInterface $slugger
-     * @param string $uploadsRelativeDir
-     * @param string $uploadsAbsoluteDir
+     * @param UploaderInterface $uploader
      * @return Response
      */
     public function create(
         Request $request,
-        SluggerInterface $slugger,
-        string $uploadsRelativeDir,
-        string $uploadsAbsoluteDir
+        UploaderInterface $uploader
     ): Response
     {
         $post = new Post();
 
-        $form = $this->createForm(PostType::class, $post)->handleRequest($request);
+        $form = $this->createForm(PostType::class, $post, [
+            'validation_groups' => ['Default', 'create']
+        ])->handleRequest($request);
+//        $form = $this->createForm(PostType::class, $post)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $file */
             $file = $form->get('file')->getData();
 
-            $filename = sprintf(
-                '%s_%s.%s',
-                $slugger->slug($file->getClientOriginalName()),
-                uniqid(),
-                $file->getClientOriginalExtension()
-            );
-
-            $file->move($uploadsAbsoluteDir, $filename);
-
-            $post->setImage($uploadsRelativeDir . '/' . $filename);
+            $post->setImage($uploader->upload($file));
 
             $this->getDoctrine()->getManager()->persist($post);
             $this->getDoctrine()->getManager()->flush();
@@ -127,19 +118,27 @@ class BlogController extends AbstractController
      * @Route("/modifier-article/{id}", name="blog_update")
      * @param Request $request
      * @param Post $post
+     * @param SluggerInterface $slugger
+     * @param string $uploadsRelativeDir
+     * @param string $uploadsAbsoluteDir
      * @return Response
      */
-    public function update(Request $request, Post $post): Response
-    {
+    public function update(Request $request,
+                           Post    $post,
+                           UploaderInterface $uploader
+    ): Response {
         $form = $this->createForm(PostType::class, $post)->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $file */
+            $file = $form->get('file')->getData();
+
+            if ($file !== null) {
+                $post->setImage($uploader->upload($file));
+            }
+
             $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('blog_read', ['id' => $post->getId()]);
         }
-
-        return $this->render('blog/update.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render('blog/update.html.twig', ['form' => $form->createView()]);
     }
 }

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 /**
  *
  */
-Abstract class PostType extends AbstractType
+class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -29,10 +29,13 @@ Abstract class PostType extends AbstractType
                 'label' => 'Article',
             ])
             ->add('file', FileType::class, [
+                'required' => false,
                 'mapped' => false,
                 'constraints' => [
                     new Image(),
-                    new NotNull(),
+                    new NotNull([
+                        'groups' => 'create'
+                    ]),
                 ]
             ]);
     }
