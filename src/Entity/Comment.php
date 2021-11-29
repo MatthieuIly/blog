@@ -22,12 +22,12 @@ class Comment
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column
-     * @Assert\NotBlank
-     * @Assert\Length(min=2)
+     * @var string|null
+     * @ORM\Column(nullable=true)
+     * @Assert\NotBlank(groups={"anonymous"})
+     * @Assert\Length(min=2, groups={"anonymous"})
      */
-    private string $author;
+    private ?string $author = null;
 
     /**
      * @var string
@@ -47,6 +47,12 @@ class Comment
      * @ORM\JoinColumn(name="post_id", referencedColumnName="id", nullable=false)
      */
     private Post $post;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @var null|User
+     */
+    private ?User $user = null;
 
     /**
      * Comment constructor.
@@ -73,11 +79,27 @@ class Comment
     }
 
     /**
-     * @param string $author
+     * @param string|null $author
      */
-    public function setAuthor(string $author): void
+    public function setAuthor(?string $author): void
     {
         $this->author = $author;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     */
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
     }
 
     /**

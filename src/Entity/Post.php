@@ -55,6 +55,12 @@ class Post
     private string $content;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @var User
+     */
+    private User $user;
+
+    /**
      * Post constructor.
      */
     public function __construct()
@@ -126,6 +132,22 @@ class Post
     public function setImage(?string $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 
 }

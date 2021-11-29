@@ -27,10 +27,9 @@ class UserFixtures extends Fixture
             $user->setEmail(sprintf("email+%d@email.com", $i));
             $user->setPseudo(sprintf("pseudo+%d", $i));
             $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
-
             $manager->persist($user);
-            $manager->flush();
+            $this->setReference(sprintf("user-%d", $i), $user);
         }
-
+        $manager->flush();
     }
 }

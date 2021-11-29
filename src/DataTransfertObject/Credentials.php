@@ -2,9 +2,10 @@
 
 namespace App\DataTransfertObject;
 
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CredentialsInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Credentials
+class Credentials implements CredentialsInterface
 {
     /**
      * @var string|null
@@ -58,4 +59,8 @@ class Credentials
         $this->password = $password;
     }
 
+    public function isResolved(): bool
+    {
+        // TODO: Implement isResolved() method.
+    }
 }

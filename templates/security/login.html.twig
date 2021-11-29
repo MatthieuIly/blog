@@ -3,15 +3,22 @@
 {% block body %}
     <div class="row">
         <div class="col">
-            {{ form_start(form) }}
+            <form method="post">
                 {{ form_errors(form) }}
-                {{ form_row(form.username) }}
-                {{ form_row(form.password) }}
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label required">Email</label>
+                    <input type="email" id="inputEmail" name="email" required="required" class="form-control" autocomplete="email" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label required">Password</label>
+                    <input type="password" id="inputPassword" name="password" class="form-control" autocomplete="current-password" required>
+                </div>
+                {# the argument of csrf_token() is an arbitrary string used to generate the token #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
                 <button type="submit" class="btn btn-primary">Se connecter</button>
-            {{ form_end(form) }}
+            </form>
         </div>
     </div>
-
 
 {% endblock %}
 

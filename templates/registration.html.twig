@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <form method="post">
+                {{ form_errors(form) }}
+{#                {{ form_row(form._token) }}#}
+                {{ form_row(form.email) }}
+                {{ form_row(form.pseudo) }}
+                {{ form_row(form.plainPassword) }}
+                {# the argument of csrf_token() is an arbitrary string used to generate the token #}
+{#                <input type="hidden" name="_csrf_token" value="{{ csrf_token('registration') }}"/>#}
+                <button type="submit" class="btn btn-primary">S'enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

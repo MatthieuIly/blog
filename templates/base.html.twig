@@ -25,13 +25,33 @@
                         <a class="nav-link active" aria-current="page" href="{{ path('index') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('security_login') }}">Se connecter</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link disabled">Disabled</a>
                     </li>
+
+                    {% if is_granted("ROLE_USER") %}
+                        <li class="nav-item">
+                            <a href="{{ path("blog_create") }}">Publier article</a>
+                        </li>
+                    {% endif %}
                 </ul>
 
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+
+                    </li>
+                    {% if is_granted("ROLE_USER") %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('security_logout') }}">Se déconnecter</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('security_login') }}">Se connecter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('registration') }}">S'inscrire</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
