@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -24,18 +23,14 @@ class Comment
     /**
      * @var string|null
      * @ORM\Column(nullable=true)
-     * @Assert\NotBlank(groups={"anonymous"})
-     * @Assert\Length(min=2, groups={"anonymous"})
      */
     private ?string $author = null;
 
     /**
-     * @var string
+     * @var ?string
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     * @Assert\Length(min=5)
      */
-    private string $content;
+    private ?string $content = null;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -111,9 +106,9 @@ class Comment
     }
 
     /**
-     * @param string $content
+     * @param ?string $content
      */
-    public function setContent(string $content): void
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
