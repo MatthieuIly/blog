@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\Post;
+use App\DataTransfertObject\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -14,9 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-/**
- *
- */
 class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -28,15 +25,14 @@ class PostType extends AbstractType
             ->add('content', TextareaType::class, [
                 'label' => 'Article',
             ])
-            ->add('file', FileType::class, [
+            ->add('image', FileType::class, [
                 'required' => false,
-                'mapped' => false,
                 'constraints' => [
                     new Image(),
                     new NotNull([
-                        'groups' => 'create'
+                        'groups' => 'create',
                     ]),
-                ]
+                ],
             ]);
     }
 

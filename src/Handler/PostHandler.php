@@ -2,7 +2,7 @@
 
 namespace App\Handler;
 
-use App\Entity\Post;
+use App\DataTransfertObject\Post;
 use App\Form\PostType;
 use App\Uploader\UploaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,12 +32,6 @@ class PostHandler extends AbstractHandler
 
     protected function process(mixed $data): void
     {
-        $file = $this->form->get('file')->getData();
-
-        if (null !== $file) {
-            $data->setImage($this->uploader->upload($file));
-        }
-
         if (UnitOfWork::STATE_NEW === $this->entityManager->getUnitOfWork()->getEntityState($data)) {
             $this->entityManager->persist($data);
         }
@@ -48,6 +42,5 @@ class PostHandler extends AbstractHandler
     {
         return new Post();
     }
-
 
 }
