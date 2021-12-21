@@ -1,0 +1,170 @@
+FROM php:8.0.13-apache
+
+LABEL maintainer="Ily Matthieu <matthieu.ily@gmail.com>"
+
+RUN apt-get -y update
+RUN apt-get -y install nano
+RUN apt-get -y install sudo
+
+### PHP
+# Use the default development php.ini configuration
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY ./docker/config/php-config/php.ini /usr/local/etc/php/
+
+# Setup bare-minimum extra extensions for Laravel & others
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y --no-install-recommends \
+#        apt-utils \
+        libmemcached-dev  \
+        libfreetype6-dev \
+        libxml2-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        zlib1g-dev \
+        libzip-dev \
+        libz-dev \
+        libpq-dev  \
+        libsqlite3-dev  \
+        libicu-dev \
+        g++ \
+        git \
+        zip \
+        libmcrypt-dev \
+        libvpx-dev \
+        libjpeg-dev \
+        libpng-dev \
+        bzip2 \
+        wget \
+        libexpat1-dev \
+        libbz2-dev \
+        libgmp3-dev \
+        libldap2-dev \
+        unixodbc-dev \
+        libsnmp-dev \
+        libpcre3-dev \
+        libtidy-dev \
+        libaspell-dev \
+        tar \
+        less \
+        nano \
+        libcurl4-gnutls-dev \
+        apt-utils \
+        libxrender1 \
+        unzip \
+        libonig-dev \
+        libldap2-dev \
+        libxslt-dev \
+        libwebp-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libpspell-dev \
+        librabbitmq-dev \
+        librabbitmq4 \
+    && phpModules=" \
+                bcmath \
+                bz2 \
+                calendar \
+                exif \
+                gd \
+                gettext \
+                gmp \
+                imap \
+                intl \
+                ldap \
+                mysqli \
+                opcache \
+                pcntl \
+                pdo_mysql \
+                pdo_pgsql \
+                pgsql \
+                pspell \
+                shmop \
+                snmp \
+                soap \
+                sockets \
+                sysvmsg \
+                sysvsem \
+                sysvshm \
+                tidy \
+                xsl \
+                zip \
+            " \
+    && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-install -j$(nproc) $phpModules \
+    && pecl install xdebug-3.0.0 \
+    && pecl install memcached-3.1.5 \
+    && pecl install redis-5.3.2 \
+    && pecl install apcu-5.1.19 \
+    && pecl install igbinary-3.1.6 \
+    && pecl install mongodb-1.9.0 \
+    && docker-php-ext-enable xdebug memcached redis apcu igbinary mongodb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY ./docker/config/.bashrc /root/.bashrc
+
+RUN apt-get install libldap2-dev -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+    docker-php-ext-install ldap
+
+RUN docker-php-ext-install soap
+
+RUN docker-php-ext-install sockets
+
+###
+
+#ENV COMPOSER_VERSION 1.0.0-alpha10
+
+# Install composer and update path
+ENV COMPOSER_HOME /composer
+ENV PATH $PATH:/composer/vendor/bin
+ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+# Copy custom config to PHP config dir.
+COPY ./docker/config/php-config/custom.ini "$PHP_INI_DIR/conf.d/"
+
+# Install ksh
+RUN apt-get -y update
+RUN apt-get -y install nano
+RUN apt-get -y install sudo
+
+RUN apt-get -y install ksh
+
+# Activate a2enmod Apache
+RUN a2enmod rewrite
+
+# Enable Apache mod_rewrite.
+RUN a2enmod rewrite ssl headers proxy proxy_http
+
+# Create required custom directories
+RUN mkdir -p /var/www/src /etc/apache2/config-from-host
+
+# Include optional Apache configuration from host.
+RUN echo "" >> /etc/apache2/apache2.conf \
+    && echo "# Include the configurations from the host machine" >> /etc/apache2/apache2.conf \
+    && echo "IncludeOptional config-from-host/*.conf" >> /etc/apache2/apache2.conf
+
+# Install Node
+# Using Debian, as root
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install --global yarn
+#RUN apt-get install --yes build-essential
+#RUN apt-get install -y npm
+## Fin Nodejs
+
+#COPY ./apache2-foreground /usr/local/bin/
+#WORKDIR /var/www/html
+
+#EXPOSE 22 80
+#CMD ["/usr/bin/supervisord"]
+EXPOSE 80
+EXPOSE 443
+#CMD ["apache2-foreground"]
+
+# Set timezone
+RUN ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime

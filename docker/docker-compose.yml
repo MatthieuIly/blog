@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+    web:
+        image: sankokai/php8.0:v1.0
+        hostname: dockerdev1
+        volumes:
+            - ./config/sites:/etc/apache2/sites-enabled
+#            - ./docker/config/usr/local/etc/php/conf.d/docker-php-ext-soap.ini:/usr/local/etc/php/conf.d/docker-php-ext-soap.ini
+            - ./config/usr/local/etc/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./config/usr/local/etc/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+            - ../:/var/www/html/blog
+            - ./config/apache/apache2.conf:/etc/apache2/apache2.conf
+            - ./application/app/softs:/app/softs
+            - ./config/.bash_profile:/root/.bash_profile
+        env_file:
+            - ./config/env/site.env
+        ports:
+            - "8080:80" # web
+            - "9080:443" # tls
+        links:
+            - db
+    db:
+        hostname: hostname-mysql
+        image: mariadb
+        volumes:
+            - ./config/mysql/init:/docker-entrypoint-initdb.d
+            - ../../docker-bdd/var/lib/mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=sqlsql
+        ports:
+            - 0.0.0.0:3307:3306
+volumes:
+    docaposte-volume:
+        external: true
+        

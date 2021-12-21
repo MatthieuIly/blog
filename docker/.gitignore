@@ -1,0 +1,3 @@
+./application/var/www/*
+var/lib/mysql/*
+application/var/www
